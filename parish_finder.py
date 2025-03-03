@@ -140,7 +140,7 @@ if __name__ == "__main__":
         writer.writerow(["State", "Num_Churches", "Church_Name", "Main Pastor Name", "Addresses", "Pastor's Phone Number", "Pastor's Email"])  # Initialize header
 
     # Run all 50 states in parallel.
-    with ThreadPoolExecutor(max_workers=3) as executor:
+    with ThreadPoolExecutor(max_workers=8) as executor:
         futures = {executor.submit(scrape_state, state): state for state in states}
         for future in as_completed(futures):
             state = futures[future]
