@@ -1,8 +1,12 @@
 from selenium import webdriver
-import time
-import csv
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import re
+
+def clean_name(name):
+    # This regex matches any whitespace, then an opening parenthesis,
+    # then any whitespace, an asterisk, any whitespace, a closing parenthesis at the end of the string.
+    return re.sub(r'\s*\(\s*\*\s*\)$', '', name)
 
 if __name__ == "__main__":
     chrome_options = webdriver.ChromeOptions()
@@ -24,16 +28,20 @@ if __name__ == "__main__":
     # Wait until the <td> elements containing "Diocese" are present.
     wait = WebDriverWait(browser, 10)
     diocese_elements = wait.until(
-        EC.presence_of_all_elements_located(("xpath", "//*[contains(text(), 'Diocese') or contains(text(), 'Archdiocese') or contains(text(), 'Eparchy') or contains(text(), 'Archeparchy')]"))
+        EC.presence_of_all_elements_located(("xpath", "//li[contains(text(), 'Diocese') or contains(text(), 'Archdiocese') or contains(text(), 'Eparchy') or contains(text(), 'Archeparchy')]"))
     )
 
 
     # Extract the text from each element
     diocese_names = [elem.text for elem in diocese_elements]
+
+    diocese_names = [clean_name(name) for name in diocese_names[:-6]]
     
     with open("all_diocese.csv", "w+") as file:
-        for name in diocese_names:
-            writer = file.writelines(name + "\n")
+        for name in diocese_names[1:]:
+            with open(f"tests/diocese/{name}.csv", "w+") as file2:
+                pass
+            file.writelines(name + "\n")
 
     browser.quit()
     
