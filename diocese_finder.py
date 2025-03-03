@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
     with open("all_diocese.csv", "w+") as file:
         for name in diocese_names[1:]:
-            with open(f"tests/diocese/{name}.csv", "w+") as file2:
+            with open(f"diocese/{name}.csv", "w+") as file2:
                 pass
             file.writelines(name + "\n")
 
